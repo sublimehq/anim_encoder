@@ -109,14 +109,13 @@ function set_animation(img_url, timeline, canvas_id, fallback_id)
 
 <body>
 
-<p>Example Animation. Please ensure you've run anim_encoder.py to generate the required data.
+<p>Example Animation. Please ensure you've run anim_encoder.py to generate the required data.</p>
 
-<div><canvas id="anim_target" class="anim_target" width="800" height="450">
+<canvas id="anim_target" class="anim_target" width="800" height="450"></canvas>
 <div id="anim_fallback" class="anim_target" style="width: 800px; height: 450px; position: relative;"></div>
-<p></canvas></div>
 
 <script>
-set_animation("example_packed.png", example_timeline, 'anim_target', 'anim_fallback');
+	set_animation("example_packed.png", example_timeline, 'anim_target', 'anim_fallback');
 </script>
 
 </body>
