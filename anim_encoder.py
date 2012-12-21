@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # Copyright (c) 2012, Sublime HQ Pty Ltd
 # All rights reserved.
 
@@ -196,8 +196,12 @@ def generate_animation(anim_name):
     packed = packed[0:allocator.num_used_rows]
 
     misc.imsave(anim_name + "_packed_tmp.png", packed)
-    os.system("pngcrush -q " + anim_name + "_packed_tmp.png " + anim_name + "_packed.png")
-    os.system("rm " + anim_name + "_packed_tmp.png")
+    # Don't completely fail if we don't have pngcrush
+    if os.system("pngcrush -q " + anim_name + "_packed_tmp.png " + anim_name + "_packed.png") == 0:
+        os.system("rm " + anim_name + "_packed_tmp.png")
+    else:
+        print "pngcrush not found, output will not be larger"
+        os.system("mv " + anim_name + "_packed_tmp.png " + anim_name + "_packed.png")
 
     # Generate JSON to represent the data
     times = [t for t, f in frames]
