@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # Copyright (c) 2012, Sublime HQ Pty Ltd
 # All rights reserved.
 
