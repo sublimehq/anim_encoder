@@ -10,13 +10,13 @@ quickly.
 Original details are at http://www.sublimetext.com/~jps/animated_gifs_the_hard_way.html
 
 ## Getting Started (Compiling the Example)
-{{{
+```
 virtualenv --distribute venv
 source venv/bin/activate
 sudo apt-get install pngcrush python-opencv python-numpy python-scipy
 python anim_encoder.py example
 firefox example.html
-}}}
+```
 
 
 ## Capturing your own images
@@ -24,9 +24,9 @@ Images will be saved to capture, you simply need to run capture.py and then go a
 Note you can just delete frames you don't want as you initially set up, should save you some
 time. Then to run the program just go
 
-{{{
+```
 python capture.py
-}}}
+```
 
 If you need to change any settings it should be pretty simple just jump over to config.py
 and edit the configuration options.
