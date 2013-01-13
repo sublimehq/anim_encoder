@@ -11,8 +11,6 @@ Original details are at http://www.sublimetext.com/~jps/animated_gifs_the_hard_w
 
 ## Getting Started (Compiling the Example)
 ```
-virtualenv --distribute venv
-source venv/bin/activate
 sudo apt-get install pngcrush python-opencv python-numpy python-scipy
 python anim_encoder.py example
 firefox example.html
