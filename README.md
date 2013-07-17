@@ -35,6 +35,12 @@ pip install pil
 # OpenCV
 brew tap homebrew/science
 brew install opencv
+
+# GTK+ for Python
+brew install pygtk
+
+# PNG Crush
+brew install pngcrush
 ```
 
 
