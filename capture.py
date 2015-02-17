@@ -20,7 +20,7 @@ w = None
 sz = None
 
 def useScreenCapture():
-    return os.system("type screencaptured &> /dev/null") == 0
+    return os.system("type screencapture &> /dev/null") == 0
 
 def useGtk():
     global w, sz
