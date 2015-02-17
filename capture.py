@@ -20,15 +20,12 @@ w = None
 sz = None
 
 def useScreenCapture():
-    try:
-        return os.system("typeof screencapture")
-        return True
-    except StandError:
-        return False
+    return os.system("type screencaptured &> /dev/null") == 0
 
 def useGtk():
+    global w, sz
     try:
-        import gtk
+        import gtk.gdk
         w = gtk.gdk.get_default_root_window()
         sz = w.get_size()
 
@@ -37,6 +34,7 @@ def useGtk():
         return False
 
 def takeScreenshot():
+    global captureMethod
     if captureMethod == None:
         if useScreenCapture():
             captureMethod = "screen"
@@ -49,6 +47,8 @@ def takeScreenshot():
     if captureMethod == "screen":
         os.system("screencapture capture/screenshot_" + str(int(time.time())) + ".png")
     elif captureMethod == "gtk":
+        import gtk.gdk
+
         pb = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB,False,8,sz[0],sz[1])
         pb = pb.get_from_drawable(w,w.get_colormap(),0,0,0,0,sz[0],sz[1])
         if (pb != None):
