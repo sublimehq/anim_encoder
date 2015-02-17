@@ -128,15 +128,16 @@ def find_matching_rect(bitmap, num_used_rows, packed, src, sx, sy, w, h):
         return None
 
 def generate_animation(anim_name):
+    from PIL import Image
+
     frames = []
-    rex = re.compile("screen_([0-9]+).png")
+    rex = re.compile("screenshot_([0-9]+).png")
     for f in os.listdir(anim_name):
         m = re.search(rex, f)
         if m:
             frames.append((int(m.group(1)), anim_name + "/" + f))
     frames.sort()
-
-    images = [misc.imread(f) for t, f in frames]
+    images = [asarray(Image.open(f).convert('RGB')) for t, f in frames]
 
     zero = images[0] - images[0]
     pairs = zip([zero] + images[:-1], images)
