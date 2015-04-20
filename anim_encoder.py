@@ -128,15 +128,23 @@ def find_matching_rect(bitmap, num_used_rows, packed, src, sx, sy, w, h):
         return None
 
 def generate_animation(anim_name):
-    frames = []
-    rex = re.compile("screen_([0-9]+).png")
-    for f in os.listdir(anim_name):
-        m = re.search(rex, f)
-        if m:
-            frames.append((int(m.group(1)), anim_name + "/" + f))
-    frames.sort()
-
-    images = [misc.imread(f) for t, f in frames]
+    if anim_name.endswith('.lcf'):
+        from lcf import process
+        frames = [(f.delta, f) for f in process(anim_name)]
+        images = [f.get_array() for t, f in frames]
+        delays = [t for t, f in frames] + [END_FRAME_PAUSE]
+        anim_name = anim_name[:-4]
+    else:
+        frames = []
+        rex = re.compile("screen_([0-9]+).png")
+        for f in os.listdir(anim_name):
+            m = re.search(rex, f)
+            if m:
+                frames.append((int(m.group(1)), anim_name + "/" + f))
+        frames.sort()
+        images = [misc.imread(f) for t, f in frames]
+        times = [t for t, f in frames]
+        delays = (array(times[1:] + [times[-1] + END_FRAME_PAUSE]) - array(times)).tolist()
 
     zero = images[0] - images[0]
     pairs = zip([zero] + images[:-1], images)
@@ -204,8 +212,6 @@ def generate_animation(anim_name):
         os.system("mv " + anim_name + "_packed_tmp.png " + anim_name + "_packed.png")
 
     # Generate JSON to represent the data
-    times = [t for t, f in frames]
-    delays = (array(times[1:] + [times[-1] + END_FRAME_PAUSE]) - array(times)).tolist()
 
     timeline = []
     for i in xrange(len(images)):
