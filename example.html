@@ -10,12 +10,10 @@
 
 <p>Example Animation. Please ensure you've run anim_encoder.py to generate the required data.
 
-<div><canvas id="anim_target" class="anim_target" width="800" height="450">
-<div id="anim_fallback" class="anim_target" style="width: 800px; height: 450px; position: relative;"></div>
-<p></canvas></div>
+<div id="anim_fallback" class="anim_target"><canvas id="anim_target" class="anim_target"></canvas></div>
 
 <script>
-set_animation("example_packed.png", example_timeline, 'anim_target', 'anim_fallback');
+	set_animation("example_packed.png", example_timeline, 'anim_target', 'anim_fallback');
 </script>
 
 </body>
