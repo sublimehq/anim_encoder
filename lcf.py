@@ -20,7 +20,7 @@ class LcfFrame(object):
         self.block = block
         self.block_idx = block_idx
         self.frame_idx = frame_idx
-        self.delta = block.frame_deltas[frame_idx]
+        self.delta = abs(block.frame_deltas[frame_idx])
 
     def get_array(self):
         hdr = self.block.hdr
