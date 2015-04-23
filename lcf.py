@@ -15,11 +15,12 @@ LcfBlock = namedtuple('LcfBlock', 'hdr frame_deltas frames')
 
 
 class LcfFrame(object):
-    def __init__(self, frame, block, idx):
+    def __init__(self, frame, block, block_idx, frame_idx):
         self.frame = frame
         self.block = block
-        self.idx = idx
-        self.delta = block.frame_deltas[idx]
+        self.block_idx = block_idx
+        self.frame_idx = frame_idx
+        self.delta = block.frame_deltas[frame_idx]
 
     def get_array(self):
         hdr = self.block.hdr
@@ -110,4 +111,4 @@ def process(filename):
                 break
             except BadBlock:
                 break
-    return [LcfFrame(f, b, i) for i, b in enumerate(blocks) for f in b.frames]
+    return [LcfFrame(f, b, i, j) for i, b in enumerate(blocks) for j, f in enumerate(b.frames)]
