@@ -4,29 +4,30 @@
 var delay_scale = 0.7;
 var timer = null;
 
-var animate = function(img, timeline, element) {
-	var i = 0;
+var animate = function(img, timeline, element, ratio) {
+	var run_time = 0,
+		i = 0,
+		j;
 
-	var run_time = 0;
-	for (var j = 0; j < timeline.length - 1; ++j) {
+	for (j = 0; j < timeline.length - 1; ++j) {
 		run_time += timeline[j].delay;
 	}
 
 	var f = function() {
-		var frame = i++ % timeline.length;
-		var delay = timeline[frame].delay * delay_scale;
-		var blits = timeline[frame].blit;
-
-		var ctx = element.getContext('2d');
+		var frame = i++ % timeline.length,
+			delay = timeline[frame].delay * delay_scale,
+			blits = timeline[frame].blit,
+			ctx = element.getContext('2d');
 
 		for (j = 0; j < blits.length; ++j) {
-			var blit = blits[j];
-			var sx = blit[0];
-			var sy = blit[1];
-			var w = blit[2];
-			var h = blit[3];
-			var dx = blit[4];
-			var dy = blit[5];
+			var blit = blits[j],
+				sx = blit[0] * ratio,
+				sy = blit[1] * ratio,
+				w = blit[2] * ratio,
+				h = blit[3] * ratio,
+				dx = blit[4] * ratio,
+				dy = blit[5] * ratio;
+
 			ctx.drawImage(img, sx, sy, w, h, dx, dy, w, h);
 		}
 
@@ -37,11 +38,12 @@ var animate = function(img, timeline, element) {
 	f();
 };
 
-var animate_fallback = function(img, timeline, element) {
-	var i = 0;
+var animate_fallback = function(img, timeline, element, ratio) {
+	var run_time = 0,
+		i = 0,
+		j;
 
-	var run_time = 0;
-	for (var j = 0; j < timeline.length - 1; ++j) {
+	for (j = 0; j < timeline.length - 1; ++j) {
 		run_time += timeline[j].delay;
 	}
 
@@ -52,18 +54,18 @@ var animate_fallback = function(img, timeline, element) {
 			}
 		}
 
-		var frame = i++ % timeline.length;
-		var delay = timeline[frame].delay * delay_scale;
-		var blits = timeline[frame].blit;
+		var frame = i++ % timeline.length,
+			delay = timeline[frame].delay * delay_scale,
+			blits = timeline[frame].blit;
 
 		for (j = 0; j < blits.length; ++j) {
-			var blit = blits[j];
-			var sx = blit[0];
-			var sy = blit[1];
-			var w = blit[2];
-			var h = blit[3];
-			var dx = blit[4];
-			var dy = blit[5];
+			var blit = blits[j],
+				sx = blit[0],
+				sy = blit[1],
+				w = blit[2],
+				h = blit[3],
+				dx = blit[4],
+				dy = blit[5];
 
 			var d = document.createElement('div');
 			d.style.position = 'absolute';
@@ -72,6 +74,7 @@ var animate_fallback = function(img, timeline, element) {
 			d.style.width = w + "px";
 			d.style.height = h + "px";
 			d.style.backgroundImage = "url('" + img.src + "')";
+			d.style.backgroundSize = (img.width / ratio) + "px " + (img.height / ratio) + "px";
 			d.style.backgroundPosition = "-" + sx + "px -" + sy + "px";
 
 			element.appendChild(d);
@@ -85,16 +88,66 @@ var animate_fallback = function(img, timeline, element) {
 };
 
 exports.set_animation = function(img_url, timeline, canvas_id, fallback_id) {
-	var img = new Image();
+	var i, j,
+		auto = 1,
+		devicePixelRatio = !auto || window.devicePixelRatio || 1,
+		width = 0,
+		height = 0,
+		img = new Image(),
+		final_img_url;
+	// Find out what is the biggest blit:
+	for (i = 0; i< timeline.length; i++) {
+		for (j = 0; j < timeline[i].blit.length; j++) {
+			var blit = timeline[i].blit[j],
+				_width = blit[2] + blit[4],
+				_height = blit[3] + blit[5];
+			if (width < _width) width = _width;
+			if (height < _height) height = _height;
+		}
+	}
 	img.onload = function() {
 		var canvas = document.getElementById(canvas_id);
 		if (canvas && canvas.getContext) {
-			animate(img, timeline, canvas);
+			var ctx = canvas.getContext('2d'),
+				backingStoreRatio = !auto ||
+									ctx.webkitBackingStorePixelRatio ||
+									ctx.mozBackingStorePixelRatio ||
+									ctx.msBackingStorePixelRatio ||
+									ctx.oBackingStorePixelRatio ||
+									ctx.backingStorePixelRatio || 1,
+				ratio = devicePixelRatio / backingStoreRatio;
+			canvas.width = width * ratio;
+			canvas.height = height * ratio;
+			canvas.style.width = width + 'px';
+			canvas.style.height = height + 'px';
+			// ctx.scale(ratio, ratio);
+			animate(img, timeline, canvas, ratio);
 		} else {
-			animate_fallback(img, timeline, document.getElementById(fallback_id));
+			var element = document.getElementById(fallback_id);
+			element.style.width = width + 'px';
+			element.style.height = height + 'px';
+			element.style.position = 'relative';
+			animate_fallback(img, timeline, element, devicePixelRatio);
 		}
 	};
-	img.src = img_url;
+
+	img.onerror = function() {
+		if (devicePixelRatio != 1) {
+			devicePixelRatio = 1;
+			final_img_url = img_url;
+			auto = 0;
+			img.src = final_img_url;
+		}
+	};
+
+	if (devicePixelRatio != 1) {
+		var retinaImageSuffix = '@' + devicePixelRatio + 'x',
+			regexMatch = /\.\w+$/;
+		final_img_url = img_url.replace(regexMatch, function(match) { return retinaImageSuffix + match; });
+	} else {
+		final_img_url = img_url;
+	}
+	img.src = final_img_url;
 };
 
 })(window);
