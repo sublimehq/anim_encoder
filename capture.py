@@ -21,7 +21,7 @@ for i in xrange(0, config.CAPTURE_NUM):
   pb = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB,False,8,sz[0],sz[1])
   pb = pb.get_from_drawable(w,w.get_colormap(),0,0,0,0,sz[0],sz[1])
   if (pb != None):
-    pb.save("capture/screenshot_"+ str(int(time.time())) +".png","png")
+    pb.save("capture/screen_"+ str(int(time.time())) +".png","png")
     print "Screenshot " + str(i) + " saved."
   else:
     print "Unable to get the screenshot."
