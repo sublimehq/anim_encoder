@@ -7,6 +7,17 @@
 var delay_scale = 0.7
 var timer = null
 
+var raf = (function()
+{
+	return !!window.requestAnimationFrame ? function(f)
+	{
+		window.requestAnimationFrame(f)
+	} : function(f)
+	{
+		f()
+	}
+}())
+
 var animate = function(img, timeline, element)
 {
 	var i = 0
@@ -35,7 +46,7 @@ var animate = function(img, timeline, element)
 			ctx.drawImage(img, sx, sy, w, h, dx, dy, w, h)
 		}
 
-		timer = window.setTimeout(f, delay)
+		timer = window.setTimeout(raf, delay, f)
 	}
 
 	if (timer) window.clearTimeout(timer)
@@ -84,7 +95,7 @@ var animate_fallback = function(img, timeline, element)
 			element.appendChild(d)
 		}
 
-		timer = window.setTimeout(f, delay)
+		timer = window.setTimeout(raf, delay, f)
 	}
 
 	if (timer) window.clearTimeout(timer)
