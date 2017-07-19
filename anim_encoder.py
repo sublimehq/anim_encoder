@@ -145,7 +145,12 @@ def generate_animation(anim_name):
             frames.append((int(m.group(1)), anim_name + "/" + f))
     frames.sort()
 
-    images = [misc.imread(f) for t, f in frames]
+    images = []
+    for t, f in frames:
+        im = misc.imread(f)
+        if im.shape[2] == 4:
+            im = im[:,:,:3]
+        images.append(im)
 
     zero = images[0] - images[0]
     pairs = zip([zero] + images[:-1], images)
