@@ -159,6 +159,7 @@ def generate_animation(anim_name):
         last_sha256 = sha256
 
         im = misc.imread(f)
+        # Remove alpha channel from image
         if im.shape[2] == 4:
             im = im[:,:,:3]
         images.append(im)
