@@ -31,6 +31,7 @@ import re
 import sys
 import os
 import cv2
+import hashlib
 from numpy import *
 from time import time
 
@@ -145,12 +146,23 @@ def generate_animation(anim_name):
             frames.append((int(m.group(1)), anim_name + "/" + f))
     frames.sort()
 
+    last_sha256 = None
     images = []
+    times = []
     for t, f in frames:
+        # Duplicate frames results in opencv terminating
+        # the process with a SIGKILL during matchTemplate
+        with open(f, 'rb') as h:
+            sha256 = hashlib.sha256(h.read()).digest()
+        if sha256 == last_sha256:
+            continue
+        last_sha256 = sha256
+
         im = misc.imread(f)
         if im.shape[2] == 4:
             im = im[:,:,:3]
         images.append(im)
+        times.append(t)
 
     zero = images[0] - images[0]
     pairs = zip([zero] + images[:-1], images)
@@ -218,7 +230,6 @@ def generate_animation(anim_name):
         os.system("mv " + anim_name + "_packed_tmp.png " + anim_name + "_packed.png")
 
     # Generate JSON to represent the data
-    times = [t for t, f in frames]
     delays = (array(times[1:] + [times[-1] + END_FRAME_PAUSE]) - array(times)).tolist()
 
     timeline = []
