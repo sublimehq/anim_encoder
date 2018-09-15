@@ -227,8 +227,15 @@ def generate_animation(anim_name):
     if os.system("pngcrush -q " + anim_name + "_packed_tmp.png " + anim_name + "_packed.png") == 0:
         os.system("rm " + anim_name + "_packed_tmp.png")
     else:
-        print("pngcrush not found, output will not be larger")
+        print("pngcrush not found, unable to reduce filesize")
         os.system("mv " + anim_name + "_packed_tmp.png " + anim_name + "_packed.png")
+
+    # Try to use pngquant since it can significantly reduce filesize for screencasts
+    # that don't include photos or other sources of many different colors
+    if os.system("pngquant -o " + anim_name + "_quant.png " + anim_name + "_packed.png") == 0:
+        os.system("mv " + anim_name + "_quant.png " + anim_name + "_packed.png")
+    else:
+        print("pngquant not found, unable to reduce filesize")
 
     # Generate JSON to represent the data
     delays = (array(times[1:] + [times[-1] + END_FRAME_PAUSE]) - array(times)).tolist()
