@@ -42,7 +42,7 @@ END_FRAME_PAUSE = 4000
 # regions.
 SIMPLIFICATION_TOLERANCE = 512
 
-MAX_PACKED_HEIGHT = 10000
+MAX_PACKED_HEIGHT = 20000
 
 def slice_size(a, b):
     return (a.stop - a.start) * (b.stop - b.start)
