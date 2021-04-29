@@ -9,10 +9,10 @@ sections = [
     'linux_dark@2x',
     'linux_light',
     'linux_light@2x',
-    'mac_dark',
-    'mac_dark@2x',
-    'mac_light',
-    'mac_light@2x',
+    'osx_dark',
+    'osx_dark@2x',
+    'osx_light',
+    'osx_light@2x',
     'windows_dark',
     'windows_dark@2x',
     'windows_light',
@@ -70,7 +70,7 @@ for sd in sorted(list(os.listdir(d))):
     if is_win:
         group = 'windows'
     elif is_mac:
-        group = 'mac'
+        group = 'osx'
 
     if is_dark:
         group += '_dark'
