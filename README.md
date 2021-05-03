@@ -10,11 +10,49 @@ quickly.
 Original details are at http://www.sublimetext.com/~jps/animated_gifs_the_hard_way.html
 
 ## Getting Started (Compiling the Example)
+
+### 1. Install dependencies
+**Linux**
 ```
 sudo apt-get install pngcrush python-opencv python-numpy python-scipy
+```
+**Mac**
+
+See http://penandpants.com/2012/02/24/install-python/
+and https://github.com/mxcl/homebrew/issues/18877
+
+```
+# NumPy
+pip install numpy
+
+# SciPy
+brew install gfortran
+pip install scipy
+
+# PIL - Python Image Library
+pip install pil
+
+# OpenCV
+brew tap homebrew/science
+brew install opencv
+
+# GTK+ for Python
+brew install pygtk
+
+# PNG Crush
+brew install pngcrush
+```
+
+
+
+
+### 2. Run
+```
 python anim_encoder.py example
 firefox example.html
 ```
+
+
 
 
 ## Capturing your own images
