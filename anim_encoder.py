@@ -253,7 +253,7 @@ def generate_animation(anim_name):
             w, h = b.stop - b.start, a.stop - a.start
             dy, dx = dst_rects[j]
 
-            blitlist.append([dx, dy, w, h, sx, sy])
+            blitlist.append([int(dx), int(dy), int(w), int(h), int(sx), int(sy)])
 
         timeline.append({'delay': delays[i], 'blit': blitlist})
 
